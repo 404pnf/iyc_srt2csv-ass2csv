@@ -4,9 +4,8 @@ require 'fileutils'
 
 # usage:  script inputfile
 
-# excel不认识utf-8的csv文件
+# excel不认识utf-8的csv文件，必须加不合规范的BOM头
 # 参考： http://stackoverflow.com/questions/155097/microsoft-excel-mangles-diacritics-in-csv-files
-# 最后采取转成utf-16方便excel打开
 
 INPUTFILE = ARGV[0]
 
@@ -23,7 +22,7 @@ end
 def file_with_bom
   Dir.mkdir('srt_csv') unless File.exist?('srt_csv')
   File.open("srt_csv/#{INPUTFILE}.csv", 'w')do |f|
-    f.puts  "\uFEFF"
+    f.puts  "\uFEFF" # 因为流氓微软的存在
   end
 end
   

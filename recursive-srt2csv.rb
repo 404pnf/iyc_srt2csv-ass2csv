@@ -56,9 +56,9 @@ def r_srt2csv(dir)
     path.pop #remove filename
     path.shift #remove leading""
     path=path.join('/')
-    $newpath=path.sub(/\A/,'/') #add root directory '/'
-    #ppath
-    #pfile
+    path=path.sub(/\A/,'/') #add root directory '/'
+    # p path
+    $newpath = path.sub('source', 'target')
     srt2csv(file)
   end
 end

@@ -5,19 +5,8 @@ require 'find'
 
 # usage:  script inputfile
 
-# 将ass文件转为csv
+# 将单个ass文件转为csv
 
-INPUTDIR = ARGV[0]
-#SUFFIX = /ass$/i
-=begin
-Find.find('source') do |file|
-  next unless file =~ /ass$/i
-  next if File.directory?(file)
-  $inputfile = File.basename(file)
-  $path = (File.expand_path(file)).split('/')
-  $path.pop
-end
-=end
 def splitfile(file)
   str = File.read(file)
   str = str.encode('utf-8', 'utf-16')
@@ -55,24 +44,3 @@ def ass2csv(file)
   file_with_bom
   write_to_file(arr)
 end
-def r_ass2csv(dir)
-  dir = dir.chomp('/') # de-slash
-#  FileUtils.cp_r(dir, 'target')
-  Find.find(dir) do |file|
-    next unless file =~ /ass$/i
-    next if File.directory?(file)
-    $inputfile = File.basename(file)
-    p $inputfile
-    path = (File.expand_path(file)).split('/') # path now is absolute with root /, e.g /home/user/file.ass
-    path.pop # remove filename
-    path.shift # remove leading ""
-    path = path.join('/')
-    path = path.sub(/\A/, '/') # add root directory
-    #p path
-    $newpath = path.sub('source', 'target')
-    #p $inputfile
-    #p $newpath
-    ass2csv(file)
-  end
-end
-r_ass2csv(ARGV[0])

@@ -29,7 +29,7 @@ Make sure your folder structure looks like this.  The directory name 'source' an
         - target
 
 
-## Expected output
+## expected output
 
       - somefolder
         - recursive-ass2csv.rb

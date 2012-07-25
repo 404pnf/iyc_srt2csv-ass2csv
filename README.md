@@ -3,7 +3,8 @@
 
 + ruby 1.9.x; it's a must
 + gnu/linux or mac osx; windows complaints abuot encoding and I don't know how to fix it; no incentive, either
-+ in case of problems, blame yourself and read this file again and again. 
++ in case of problems, blame yourself and read this file again. 
+
 
 # usage: 
 
@@ -14,6 +15,17 @@
 1. type:  ruby scriptname.rb (replace scriptname.rb with either recursive-ass2csv.orb or recursive-srt2csv.rb)
 1. a directory named 'target' would be generated with the csv files
 1. profit!
+
+# nota bene, aka, N.B.
+
+This s a quick-and-dirty solution for a specific use caes.  So lots of things are hardcoded and global variables all over the place.  Yes, it's ugly.  But it GTD!
+
+Also the following assumptions is made:
+
+1. input files are encoded in utf-16le; please blame the translation group for this
+1. output files are encoded in utf-8 with BOM, because excel on windows need the BOM header to recognize that a csv file is encoded in utf-8; please blame Microsoft for this
+
+Want a flexible solution?  Fork and DIY!
 
 
 # walk through

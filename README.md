@@ -1,3 +1,4 @@
+
 # usage: 
 
       ruby scriptname.rb
@@ -15,38 +16,38 @@ Make sure your folder structure looks like this.  The directory name 'source' an
 
 ## directory layout
 
-- somefolder
-  - recursive-ass2csv.rb
-  - source
-    - MIT
-	  - autumn
-	    - wooping.ass
-	  - spring
-	    - wipe.ass
-	- USC
-	  - USC.univ.4.spoiled.children.ass
-  - target
+      - somefolder
+        - recursive-ass2csv.rb
+        - source
+          - MIT
+      	  - autumn
+      	   - wooping.ass
+      	  - spring
+      	   - wipe.ass
+      	- USC
+      	 - USC.univ.4.spoiled.children.ass
+        - target
 
 
 ## Expected output
-- somefolder
-  - recursive-ass2csv.rb
-  - source
-    - MIT
-	  - autumn
-	    - wooping.ass
-	  - spring
-	    - wipe.ass
-	- USC
-	  - USC.univ.4.spoiled.children.ass
-  - target
-	  - autumn
-	    - wooping.ass.csv
-	  - spring
-	    - wipe.ass.csv
-	- USC
-	  - USC.univ.4.spoiled.children.ass.csv
 
+      - somefolder
+        - recursive-ass2csv.rb
+        - source
+          - MIT
+      	  - autumn
+      	    - wooping.ass
+      	  - spring
+      	    - wipe.ass
+      	- USC
+      	  - USC.univ.4.spoiled.children.ass
+        - target
+      	  - autumn
+      	    - wooping.ass.csv
+      	  - spring
+      	    - wipe.ass.csv
+      	- USC
+      	  - USC.univ.4.spoiled.children.ass.csv
 	  
 # support and contribution
 

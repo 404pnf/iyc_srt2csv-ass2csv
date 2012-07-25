@@ -3,14 +3,11 @@ require 'csv'
 require 'fileutils'
 require 'find'
 
-# 本来可以单独使用，现在不可了。需要化稍微修改就好。不要全局变量呗
-# usage:  script inputfile
+# usage:  ruby script.rb
+# 默认输入文件夹是 source 输出文件夹是 target
 
 # excel不认识utf-8的csv文件，必须加不合规范的BOM头
 # 参考： http://stackoverflow.com/questions/155097/microsoft-excel-mangles-diacritics-in-csv-files
-
-# 处理单个文件
-# 输出的文件夹是 target
 
 def splitfile(file)
   str = File.read(file)
@@ -43,3 +40,24 @@ def srt2csv(file)
   file_with_bom
   write_to_file(arr)
 end
+def r_srt2csv
+  dir = 'source'
+  Find.find(dir) do |file|
+    next unless file =~ /srt$/i
+    next if File.directory?(file)
+    $inputfile = File.basename(file)
+    path = (File.expand_path(file)).split('/') # path now is absolute with root /, e.g /home/user/file.ass
+    path.pop #remove filename
+    path=path.join('/')
+    $newpath = path.sub('source', 'target')
+    puts "正在处理： #{$inputfile}"
+    srt2csv(file)
+  end
+  puts "========================================="
+  puts "da di di da da"
+  puts ''
+  puts "都转好了，请查看当前目录下的target目录。"
+  puts ''
+  puts '========================================='
+end
+r_srt2csv()

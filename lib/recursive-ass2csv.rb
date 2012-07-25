@@ -5,8 +5,19 @@ require 'find'
 
 # usage:  script inputfile
 
-# 将单个ass文件转为csv
+# source目录的ass字母文件输出到同样目录结构的target目录
+# 并转换为流氓微软的excel产品可直接读取的带有BOM的UTF-8编码的csv文件
 
+def ass2csv_help
+  if ARGV.length != 0
+    puts "usage: ruby scriptname.rb"
+    puts "put all ass files in a dir called 'source'"
+    puts "a folder named 'target' would be generated with the expected results"
+    puts "put this script in the same folder where 'source' and 'target' reside"
+    puts "type ruby scriptname.rb"
+    puts "have fun"
+  end
+end
 def splitfile(file)
   str = File.read(file)
   str = str.encode('utf-8', 'utf-16')
@@ -44,3 +55,30 @@ def ass2csv(file)
   file_with_bom
   write_to_file(arr)
 end
+
+def r_ass2csv)
+  ass2csv_help
+#  dir = dir.chomp('/') # de-slash
+  dir = 'source'
+  Find.find(dir) do |file|
+    next unless file =~ /ass$/i
+    next if File.directory?(file)
+    $inputfile = File.basename(file)
+    path = (File.expand_path(file)).split('/') # path now is absolute with root /, e.g /home/user/file.ass
+    path.pop # remove filename
+    path.shift # remove leading ""
+    path = path.join('/')
+    path = path.sub(/\A/, '/') # add root directory
+    $newpath = path.sub('source', 'target')
+    puts "正在处理： #{file}"
+    puts ""
+    ass2csv(file) # defined in lib/recursive-ass2csv.rb
+  end
+  puts "========================================="
+  puts "da di di da da"
+  puts ''
+  puts "都转好了，请查看当前目录下的target目录。"
+  puts ''
+  puts '========================================='
+end
+r_ass2csv()

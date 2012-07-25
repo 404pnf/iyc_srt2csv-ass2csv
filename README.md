@@ -20,7 +20,7 @@
 
 This s a quick-and-dirty solution for a specific use caes.  So lots of things are hardcoded and global variables all over the place.  Yes, it's ugly.  But it GTD!
 
-Also the following assumptions is made:
+Also the following assumptions are made:
 
 1. input files are encoded in utf-16le; please blame the translation group for this
 1. output files are encoded in utf-8 with BOM, because excel on windows need the BOM header to recognize that a csv file is encoded in utf-8; please blame Microsoft for this

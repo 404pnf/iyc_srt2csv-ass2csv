@@ -3,6 +3,8 @@ require 'csv'
 require 'fileutils'
 require 'find'
 
+# must run with ruby 1.9.x
+
 # usage:  script 
 # 使用说明
 
@@ -21,7 +23,7 @@ def ass2csv_help
 end
 def splitfile(file)
   str = File.read(file)
-  str = str.encode('utf-8', 'utf-16')
+  str = str.encode('utf-8', 'utf-16le') # be specific, use utf-16le ranther than utf-16, for mac osx compatability
   str = str.gsub(/\r/,"\n")
   str = str.gsub(/\n\n+/,"\n")
   arr = str.split(/\n/)
@@ -40,7 +42,7 @@ def write_to_file(arr)
   # http://stackoverflow.com/questions/5831366/quote-all-fields-in-csv-output
   CSV.open("#{$newpath}/#{$inputfile}.csv", 'a', {:force_quotes=>true}) do |csv| # append mode
     arr.each do |sentence| 
-      sentence = sentence.gsub(/{[^}]+}/, '') # 有了它极大简化后面正则匹配
+      sentence = sentence.gsub(/{[^}]+}/, '') # 有了它极大简化后面正则匹配 ruby1.8 complaints and quits on this re!?
       sentence = sentence.sub(/^Dialogue..*,,/, '')
       tuple= sentence.split('\\N')
       zh = tuple[0]

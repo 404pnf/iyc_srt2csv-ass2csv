@@ -3,6 +3,8 @@ require 'csv'
 require 'fileutils'
 require 'find'
 
+# must run with ruby 1.9.x
+
 # usage:  ruby script.rb
 # 默认输入文件夹是 source 输出文件夹是 target
 
@@ -11,7 +13,7 @@ require 'find'
 
 def splitfile(file)
   str = File.read(file)
-  str = str.encode('utf-8', 'utf-16')
+  str = str.encode('utf-8', 'utf-16le') # need to be specific utf-16le for mac osx compatability
   str = str.gsub(/\r/,"\n")
   str = str.gsub(/\n\n+/,"\n")
   arr = str.split(/^[0-9]+$/)

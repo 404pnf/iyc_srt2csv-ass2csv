@@ -1,13 +1,19 @@
 
+# requirements:
+
++ ruby 1.9.x; it's a must
++ gnu/linux or mac osx; windows complaints abuot encoding and I don't know how to fix it; no incentive, either
++ in case of problems, blame yourself and read this file again and again. 
+
 # usage: 
 
       ruby scriptname.rb
 
-+ all ass files in a dir called 'source'
-+ a folder named 'target' would be generated with the expected results
-+ put this script in the same folder where 'source' and 'target' reside
-+ type ruby scriptname.rb
-+ profit!
+1 all ass/srt files in a direcotry called 'source
+1. put this script in the same folder where 'source' resides
+1. type:  ruby scriptname.rb (replace scriptname.rb with either recursive-ass2csv.orb or recursive-srt2csv.rb)
+1. a directory named 'target' would be generated with the csv files
+1. profit!
 
 
 # walk through
@@ -28,6 +34,9 @@ Make sure your folder structure looks like this.  The directory name 'source' an
       	 - USC.univ.4.spoiled.children.ass
         - target
 
+## run the scirpt
+
+       ruby recursive-ass2csv.rb
 
 ## expected output
 

@@ -9,7 +9,7 @@
 
       ruby scriptname.rb
 
-1 all ass/srt files in a direcotry called 'source
+1. all ass/srt files in a direcotry called 'source
 1. put this script in the same folder where 'source' resides
 1. type:  ruby scriptname.rb (replace scriptname.rb with either recursive-ass2csv.orb or recursive-srt2csv.rb)
 1. a directory named 'target' would be generated with the csv files

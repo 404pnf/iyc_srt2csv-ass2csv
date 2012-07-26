@@ -22,6 +22,16 @@ def splitfile(file)
   arr.shift
   arr
 end
+def split_ascii_file(file)
+  str = File.read(file)
+#  str = str.encode('utf-8', 'utf-16')
+  str = str.gsub(/\r/,"\n")
+  str = str.gsub(/\n\n+/,"\n")
+  str = str.gsub(/<[^>]+>/,'')  # 删除这种垃圾 <font color=\"#ffff00\">
+  arr = str.split(/^[0-9]+$/) #不要忘记了$否则会匹配到时间线
+  arr.shift
+  arr
+end
 def timeline_text_hash(arr)
   rst = {}
   arr.each do |i|
@@ -52,7 +62,7 @@ def write_to_file(hash_en, hash_zh)
     end
 end
 def combine_src(en_srt, zh_srt)
-  en_arr = splitfile(en_srt)
+  en_arr = split_ascii_file(en_srt)
   zh_arr = splitfile(zh_srt)
   file_with_bom
   hash_en = timeline_text_hash(en_arr)

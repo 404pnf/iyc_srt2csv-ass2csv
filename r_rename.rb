@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'fileutils'
+$input = ARGV[0].chomp('/')
+$output = ARGV[1].chomp('/')
 def sanitize(title)
   # 不要替换 / 否则路径分割符号也被替换了
   # 因为下面的file是含有路径的
@@ -15,7 +17,7 @@ def sanitize(title)
   # 哦，我只到何时引入的了，是ARGV[0]没有chomp掉目录的结尾 /
   title = title.gsub(/\/\/+/, '/')
 end
-def recursive_rename(dir)
+def recursive_rename(dir, output)
   Dir.glob("#{dir}/**/*").each do |file|
     next if File.directory? file
     abs_fn = File.expand_path(file)
@@ -27,8 +29,8 @@ def recursive_rename(dir)
     path = path.join('/')
     path = path.sub(/\A/, '/') # add root directory
 #    p path
-    newpath = path.sub("cmb", 'haha')
-    newfilename = normalized_fn.sub('cmb', 'haha') 
+    newpath = path.sub("#{$input}", "#{output}")
+    newfilename = normalized_fn.sub("#{$input}", "#{$output}") 
     FileUtils.mkdir_p(newpath) unless File.exist?(newpath)
 #    p newpath
 #    p newfilename
@@ -36,4 +38,5 @@ def recursive_rename(dir)
     FileUtils.cp(abs_fn, newfilename, :verbose => true)
   end  
 end
-recursive_rename('cmb')
+#recursive_rename(ARGV[0].chomp('/'), $output)
+recursive_rename($input, $output)

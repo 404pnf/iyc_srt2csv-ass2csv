@@ -17,24 +17,17 @@ def sanitize(title)
 end
 def recursive_rename(dir)
   Dir.glob("#{dir}/**/*").each do |file|
-    #p file
     abs_fn = File.expand_path(file)
-    newfilename = sanitize(file)
-    path = (File.expand_path(newfilename)).split('/') # path now is absolute with root /, e.g /home/user/file.ass
+    normalized_fn = sanitize(file)
+    path = (File.expand_path(normalized_fn)).split('/') # path now is absolute with root /, e.g /home/user/file.ass
     path.pop # remove filename
     path.shift # remove leading ""
     path = path.join('/')
     path = path.sub(/\A/, '/') # add root directory
     newpath = path.sub('source', 'haha')
-    newfilename = newfilename.sub('source', 'haha')
- #   p newpath
+    newfilename = normalized_fn.sub('source', 'haha') 
     FileUtils.mkdir_p(newpath) unless File.exist?(newpath)
     next unless newfilename =~ /(srt|ass)$/i
-#    p newfilename
-#    p file
-    p abs_fn
-    p newfilename
-
     FileUtils.cp(abs_fn, newfilename, :verbose => true)
   end  
 end

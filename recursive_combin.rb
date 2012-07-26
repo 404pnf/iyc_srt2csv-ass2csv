@@ -8,10 +8,8 @@ require 'find'
 # 将英文和中文分开的srt文件合并到一个csv中
 # 输出文件在 
 
-OUTPUT = 'srt_csv'
-
-
-
+INPUT = ARGV[0].chomp('/')
+OUTPUT = ARGV[1].chomp('/')
 def splitfile(file)
   str = File.read(file)
 #  str = str.encode('utf-8', 'utf-16')
@@ -45,15 +43,15 @@ def timeline_text_hash(arr)
   rst
 end
 def file_with_bom
-  Dir.mkdir(OUTPUT) unless File.exist?(OUTPUT)
-  File.open("#{OUTPUT}/#{$filename}", 'w')do |f|
+  FileUtils.mkdir_p($newfilepath) unless File.exist?($newfilepath)
+  File.open("#{$newfilepath}/#{$filename}", 'w')do |f|
     f.puts  "\uFEFF"
   end
 end
 def write_to_file(hash_en, hash_zh)
   # 悲剧，ruby的csv默认就是不quote值，浪费了半个小时才找到:force_quote用法
   # http://stackoverflow.com/questions/5831366/quote-all-fields-in-csv-output
-    CSV.open("#{OUTPUT}/#{$filename}", 'a', {:force_quotes=>true}) do |csv| # append mode
+    CSV.open("#{$newfilepath}/#{$filename}", 'a', {:force_quotes=>true}) do |csv| # append mode
       hash_en.keys.each do |key|
         zh = hash_zh[key]
         en = hash_en[key]
@@ -61,44 +59,6 @@ def write_to_file(hash_en, hash_zh)
       end
     end
 end
-def combine_src(en_srt, zh_srt)
-  en_arr = split_ascii_file(en_srt)
-  zh_arr = splitfile(zh_srt)
-  file_with_bom
-  hash_en = timeline_text_hash(en_arr)
-  hash_zh = timeline_text_hash(zh_arr)
-  write_to_file(hash_en, hash_zh)
-end
-
-
-# recursively get all dirs
-# input a dir
-# an array contains all dirs to traverse
-def r_get_dir(dir)
-  all_dirs = []
-  Find.find(dir) do |d|
-    if File.directory? d
-      all_dirs << d
-    end
-  end
-  all_dirs
-end
-def only_two_files?(dir)
-  if Dir.glob("*.srt").size == 2 # return a array
-    true
-  else
-    nil
-  end
-end
-def cmb_two_files
-  en_arr = split_ascii_file(en_srt)
-  zh_arr = splitfile(zh_srt)
-  file_with_bom
-  hash_en = timeline_text_hash(en_arr)
-  hash_zh = timeline_text_hash(zh_arr)
-  write_to_file(hash_en, hash_zh)
-end
-
 def all_in_one(dir)
   all_dirs = []
   Find.find(dir) do |d|
@@ -106,17 +66,28 @@ def all_in_one(dir)
       all_dirs << d
     end
   end
+  finaldir = []
   all_dirs.each do |d2|
-    if Dir.glob("*.srt").size != 2 # return an array
-      all_dirs.delete(d2)
+    if Dir.glob("#{d2}/*.srt").size == 2 # return an array
+      finaldir << d2
     end
   end
-  all_dirs.each do |d3|
+  p finaldir
+  finaldir.each do |d3|
     filelist = Dir.glob("#{d3}/*.srt") # return an array
     zh_file = filelist[0] # we don't actually know the first item is zh_file but we don't care
     en_file = filelist[1] # we only care about assigning them to tow variables
-    $filename = File.basename(zh_file).sub(/(eng.srt$|chs.srt$)/, 'cmb.srt') # rename
-    p $filename
+    filepath = File.expand_path(zh_file)
+    filepath = filepath.split('/')
+    filepath.pop
+    filepath.shift
+    filepath = filepath.join('/')
+    filepath = filepath.sub(/\A/, '/')
+#    p filepath
+    $newfilepath = filepath.sub("#{INPUT}", "#{OUTPUT}")
+#    p $newfilepath
+    $filename = File.basename(zh_file).sub(/(eng.srt$|chs.srt$)/, 'cmb.srt.csv') # rename
+    p ": #{$filename}"
     en_arr = split_ascii_file(en_file)
     zh_arr = splitfile(zh_file)
     file_with_bom

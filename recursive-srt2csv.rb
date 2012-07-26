@@ -12,8 +12,8 @@ require 'find'
 # 参考： http://stackoverflow.com/questions/155097/microsoft-excel-mangles-diacritics-in-csv-files
 
 def splitfile(file)
-  str = File.read(file)
-  str = str.encode('utf-8', 'utf-16le') # need to be specific utf-16le for mac osx compatability
+  str = File.read(file, "rb")
+#  str = str.encode('utf-8', 'utf-16le') # need to be specific utf-16le for mac osx compatability
   str = str.gsub(/\r/,"\n")
   str = str.gsub(/\n\n+/,"\n")
   arr = str.split(/^[0-9]+$/)
@@ -21,7 +21,7 @@ def splitfile(file)
   arr
 end
 def file_with_bom
-  Dir.mkdir("#{$newpath}") unless File.exist?("#{$newpath}")
+  FileUtils.mkdir_p("#{$newpath}") unless File.exist?("#{$newpath}")
   File.open("#{$newpath}/#{$inputfile}.csv", 'w')do |f|
     f.puts  "\uFEFF" # 因为流氓微软的存在
   end

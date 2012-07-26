@@ -6,7 +6,7 @@ require 'find'
 # usage:  script en.srt ch.srt
 
 # 将英文和中文分开的srt文件合并到一个csv中
-# 输出文件在 
+# recursively handle dirs
 
 INPUT = ARGV[0].chomp('/')
 OUTPUT = ARGV[1].chomp('/')
@@ -72,7 +72,7 @@ def all_in_one(dir)
       finaldir << d2
     end
   end
-  p finaldir
+#  p finaldir
   finaldir.each do |d3|
     filelist = Dir.glob("#{d3}/*.srt") # return an array
     zh_file = filelist[0] # we don't actually know the first item is zh_file but we don't care
@@ -87,7 +87,7 @@ def all_in_one(dir)
     $newfilepath = filepath.sub("#{INPUT}", "#{OUTPUT}")
 #    p $newfilepath
     $filename = File.basename(zh_file).sub(/(eng.srt$|chs.srt$)/, 'cmb.srt.csv') # rename
-    p ": #{$filename}"
+    p "transforming: #{$filename}"
     en_arr = split_ascii_file(en_file)
     zh_arr = splitfile(zh_file)
     file_with_bom
@@ -98,6 +98,6 @@ def all_in_one(dir)
 end
 
 all_in_one(ARGV[0].chomp('/'))
-#combine_src(EN, ZH)
+
 
 

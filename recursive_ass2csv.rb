@@ -11,19 +11,11 @@ require 'find'
 # source目录的ass字母文件输出到同样目录结构的target目录
 # 并转换为流氓微软的excel产品可直接读取的带有BOM的UTF-8编码的csv文件
 
-def ass2csv_help
-  if ARGV.length != 0
-    puts "usage: ruby scriptname.rb"
-    puts "put all ass files in a dir called 'source'"
-    puts "a folder named 'target' would be generated with the expected results"
-    puts "put this script in the same folder where 'source' and 'target' reside"
-    puts "type ruby scriptname.rb"
-    puts "have fun"
-  end
-end
+INPUT = ARGV[0].chomp('/')
+OUTPUT = ARGV[1].chomp('/')
 def splitfile(file)
   str = File.read(file)
-  str = str.encode('utf-8', 'utf-16le') # be specific, use utf-16le ranther than utf-16, for mac osx compatability
+#  str = str.encode('utf-8', 'utf-16le') # be specific, use utf-16le ranther than utf-16, for mac osx compatability
   str = str.gsub(/\r/,"\n")
   str = str.gsub(/\n\n+/,"\n")
   arr = str.split(/\n/)
@@ -59,7 +51,6 @@ def ass2csv(file)
   write_to_file(arr)
 end
 def r_ass2csv
-  ass2csv_help
 #  dir = dir.chomp('/') # de-slash
   dir = 'source'
   Find.find(dir) do |file|
@@ -83,4 +74,4 @@ def r_ass2csv
   puts ''
   puts '========================================='
 end
-r_ass2csv()
+r_ass2csv($inputdir, $outputdir)

@@ -2,6 +2,12 @@
 require 'fileutils'
 $input = ARGV[0].chomp('/')
 $output = ARGV[1].chomp('/')
+
+def separate_path_filename(str)
+  # return a array, array[0] is matched string, 
+  # array[1] is path, array[2] is filename
+  /(.*\/)([^\/]+$)/.match(str) 
+end
 def sanitize(title)
   # 不要替换 / 否则路径分割符号也被替换了
   # 因为下面的file是含有路径的
@@ -23,12 +29,16 @@ def recursive_rename(dir, output)
     abs_fn = File.expand_path(file)
     normalized_fn = sanitize(abs_fn)
 #    p abs_fn
-    path = (File.expand_path(normalized_fn)).split('/') # path now is absolute with root /, e.g /home/user/file.ass
-    path.pop # remove filename
-    path.shift # remove leading ""
-    path = path.join('/')
-    path = path.sub(/\A/, '/') # add root directory
-#    p path
+    path = (File.expand_path(normalized_fn))
+    path = separate_path_filename(path)[1]
+    #    p path
+    # the old way to get the path 
+    #    path = (File.expand_path(normalized_fn)).split('/') # path now is absolute with root /, e.g /home/user/file.ass
+    #    path.pop # remove filename
+    #    path.shift # remove leading ""
+    #    path = path.join('/')
+    #    path = path.sub(/\A/, '/') # add root directory
+    #    p path
     newpath = path.sub("#{$input}", "#{output}")
     newfilename = normalized_fn.sub("#{$input}", "#{$output}") 
     FileUtils.mkdir_p(newpath) unless File.exist?(newpath)

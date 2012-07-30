@@ -6,9 +6,10 @@ require './lib/script2csv.rb'
 $input = File.expand_path(ARGV[0])
 $output = File.expand_path(ARGV[1])
 def srt2csv(file)
-  input = File.read(file)
+  arr = split_srt(File.read(file))
+  arr_csv = srt_generate_hash(arr)
   file_with_bom
-  write_to_file(generate_hash(input))
+  write_to_file arr_csv
 end
 def r_srt2csv(input, output)
   input = File.expand_path $input

@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+require './lib/script2csv2.rb'
 require 'csv'
 require 'fileutils'
 require 'find'
+$input = File.expand_path(ARGV[0])
+$output = File.expand_path(ARGV[1])
 def srt2csv(file)
   arr = splitfile(file)
   file_with_bom
@@ -14,8 +17,8 @@ def r_srt2csv
     next unless file =~ /ass$/i
     next if File.directory?(file)
     $inputfile = File.basename(file, 'srt') # $inputfile is filename. , with a dot
-    $inputpath = File.dirname(file)
-    $newpath = $inputpath.sub(input, output)
+    inputpath = File.dirname(file)
+    $newpath = inputpath.sub(input, output)
     puts "正在处理： #{file} \n"
     ass2csv(file)
   end

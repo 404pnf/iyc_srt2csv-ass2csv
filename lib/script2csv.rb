@@ -3,7 +3,7 @@ require 'find'
 require 'fileutils'
 require 'csv'
 
-#有时间戳作为键，然后chs/eng作为下一级别的key
+#时间戳作为键，然后chs/eng作为下一级别的key
 #可以尝试用symbol哟 ：）
 #hash[timstamp][chs] = 中文翻译
 #hash[timstamp][eng] = 中文翻译
@@ -21,15 +21,39 @@ require 'csv'
 
 # $input = ARGV[0].chomp('/')
 # $output = ARGV[1].chomp('/')
-def generate_hash(str)
-  hash = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc) }
+
+def split_srt(str)
+#  str = File.read(file)
+#  str = str.encode('utf-8', 'utf-16le') # need to be specific utf-16le for mac osx compatability
   str = str.gsub(/\r/,"\n")
   str = str.gsub(/\n\n+/,"\n")
-  str = str.gsub(/{[^}]+}/, '')
-  array = str.split(/\n/)
-  array = array.reject {|i|  !(i =~ /^Dialogue/) }
+  # 去掉这些垃圾<font color=#00FF00>【  -=THE LAST FANTASY=- 荣誉出品  】</font>
+  str = str.gsub(/<[^>]+>/,'')  # 删除这种垃圾 <font color=\"#ffff00\">
+  arr = str.split(/^[0-9]+$/)
+  arr.shift # 第一行是个空的
+  return arr # 必须有这行，否则最后输出的是组后求值的arr.shift，成了""啦！用return关键字提醒一下自己
+  # p arr
+  # arr now is  
+  # a=  ["\n00:00:01,810 --> 00:00:03,600\n好的  一百五十年来\nOkay. So for 150 years\n", "\n00:00:03,600 --> 00:00:12,180\n有机化学课程似乎令人闻之却步\norganic chemistry courses have tended to acquire a daunting reputation. \n"]
+end
+def srt_generate_hash(array)
+
+  hash = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc) }
   array.each do |line|
-    arr = line.split(',')
+    arr = line.split(/\n/)
+    # arr ["", "00:00:01,810 --> 00:00:03,600", "好的  一百五十年来", "Okay. So for 150 years"]
+    timestamp = arr[1].split('-->')[0].to_s # starting time is enough for key
+    hash[timestamp][:chs] = arr[2]
+    hash[timestamp][:eng] = arr[3]
+  end
+  array = hash.sort_by {|k,v| k} #用timestamp排序
+end
+# a=  ["\n00:00:01,810 --> 00:00:03,600\n好的  一百五十年来\nOkay. So for 150 years\n", "\n00:00:03,600 --> 00:00:12,180\n有机化学课程似乎令人闻之却步\norganic chemistry courses have tended to acquire a daunting reputation. \n"]
+# p srt_generate_hash(a)
+def generate_hash(array)
+  hash = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc) }
+  array.each do |line|
+    arr = line.split(/,/)
     timestamp = arr[1].to_s # starting time is enough for key
     lang = arr[3].to_s.downcase
     # 按说这个格式是严格的，因此可以直接用逗号分割
@@ -96,7 +120,7 @@ def ending_msg
   puts ''
   puts '========================================='
 end
-# use this to test generate_hash
+# ass file format
 =begin
 str =<<eof
 Dialogue: 0,0:07:54.50,0:06:58.53,Chs,,0000,0000,0000,,第二部分.
@@ -112,4 +136,15 @@ Dialogue: 1,0:29:04.00,0:29:22.00,kak,,0000,0000,0000,,kak, kak\N竟然有中文
 eof
 =end
 
-#p generate_hash(str)
+=begin
+# srt file format
+1
+00:00:01,810 --> 00:00:03,600
+好的  一百五十年来
+Okay. So for 150 years
+
+2
+00:00:03,600 --> 00:00:12,180
+有机化学课程似乎令人闻之却步
+organic chemistry courses have tended to acquire a daunting reputation. 
+=end

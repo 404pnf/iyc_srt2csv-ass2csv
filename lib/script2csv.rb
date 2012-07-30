@@ -19,8 +19,8 @@ require 'csv'
 # x[:la][:li][:lu][:chunky][:bacon][:foo] = "bar"
 # hash = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc) }
 
- $input = ARGV[0].chomp('/')
- $output = ARGV[1].chomp('/')
+# $input = ARGV[0].chomp('/')
+# $output = ARGV[1].chomp('/')
 def generate_hash(str)
   hash = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc) }
   str.gsub!(/\r/,"\n")
@@ -70,6 +70,8 @@ end
 #str = 'Dialogue: 0,0:00:40.58,0:00:45.39,*Default,NTP,0000,0000,0000,,那些将都是实的 但在那之前\Nthat will be mostly real. But at one point somewhere,'
 # generate_hash(str)
 def file_with_bom
+  # excel不认识utf-8的csv文件，必须加不合规范的BOM头
+  # 参考： http://stackoverflow.com/questions/155097/microsoft-excel-mangles-diacritics-in-csv-files
   FileUtils.mkdir_p("#{$newpath}") unless File.exist?("#{$newpath}")
   File.open("#{$newpath}/#{$inputfile}csv", 'w')do |f|
     f.puts  "\uFEFF"
@@ -94,37 +96,19 @@ def ending_msg
   puts ''
   puts '========================================='
 end
-def ass2csv(file)
-  input = File.read(file)
-  file_with_bom
-  write_to_file(generate_hash(input))
-end
-
 # use this to test generate_hash
 =begin
 str =<<eof
-
 Dialogue: 0,0:07:54.50,0:06:58.53,Chs,,0000,0000,0000,,第二部分.
-
 Dialogue: 0,0:07:54.50,0:06:58.53,eng,,0000,0000,0000,,second part.
-
 Dialogue: 0,0:06:54.50,0:06:58.53,Chs,,0000,0000,0000,,从而推动科学的发展.
-
 Dialogue: 0,0:06:54.50,0:06:58.53,eng,,0000,0000,0000,,promote the progress of science.
-
 Dialogue: 0,0:06:55.50,0:06:58.53,*Default,,0000,0000,0000,,没有声明语言.
-
 Dialogue: 0,0:06:55.50,0:06:58.53,*Default,,0000,0000,0000,,no language code declared.
-
 Dialogue: 0,0:06:55.50,0:06:58.53,*Default,,0000,0000,0000,,有英文逗号,还有.
-
 Dialogue: 0,0:06:55.50,0:06:58.53,*Default,,0000,0000,0000,,with comma, another one, ha.
-
 Dialogue: 1,0:29:04.00,0:29:22.00,kak,,0000,0000,0000,,函数一：距离\N函数二：匀变速的速度
-
 Dialogue: 1,0:29:04.00,0:29:22.00,kak,,0000,0000,0000,,kak, kak\N竟然有中文在kak中
-
-
 eof
 =end
 

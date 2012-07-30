@@ -15,6 +15,8 @@ def sanitize(title)
   # 不知何时引入了多个连续的 // 可这 连续的 // 给我伤害
   # 哦，我知道何时引入的了，是ARGV[0]没有chomp掉目录的结尾 /
   title = title.gsub(/\/\/+/, '/')
+  title.gsub!(/srt$/i,'srt' ) # 为了后面匹配文件名后缀方便，都换成小写
+  title.gsub!(/ass$/i,'ass' )
 end
 def recursive_rename(dir, output)
   Dir.glob("#{dir}/**/*").each do |file|

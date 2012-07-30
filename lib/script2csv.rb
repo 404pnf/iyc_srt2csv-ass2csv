@@ -29,7 +29,7 @@ def split_srt(str)
   str = str.gsub(/\n\n+/,"\n")
   # 去掉这些垃圾<font color=#00FF00>【  -=THE LAST FANTASY=- 荣誉出品  】</font>
   str = str.gsub(/<[^>]+>/,'')  # 删除这种垃圾 <font color=\"#ffff00\">
-  arr = str.split(/^[0-9]+$/)
+  arr = str.split(/^[0-9]+$/) 
   arr.shift # 第一行是个空的
   return arr # 必须有这行，否则最后输出的是组后求值的arr.shift，成了""啦！用return关键字提醒一下自己
   # p arr
@@ -37,7 +37,6 @@ def split_srt(str)
   # a=  ["\n00:00:01,810 --> 00:00:03,600\n好的  一百五十年来\nOkay. So for 150 years\n", "\n00:00:03,600 --> 00:00:12,180\n有机化学课程似乎令人闻之却步\norganic chemistry courses have tended to acquire a daunting reputation. \n"]
 end
 def srt_generate_hash(array)
-
   hash = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc) }
   array.each do |line|
     arr = line.split(/\n/)
@@ -50,6 +49,32 @@ def srt_generate_hash(array)
 end
 # a=  ["\n00:00:01,810 --> 00:00:03,600\n好的  一百五十年来\nOkay. So for 150 years\n", "\n00:00:03,600 --> 00:00:12,180\n有机化学课程似乎令人闻之却步\norganic chemistry courses have tended to acquire a daunting reputation. \n"]
 # p srt_generate_hash(a)
+def srt_gen_eng_hash(array)
+  hash = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc) }
+  array.each do |line|
+    arr = line.split(/\n/)
+    # arr ["", "00:00:01,810 --> 00:00:03,600", "it's english, englishx", "Okay. So for 150 years"]
+    timestamp = arr[1].split('-->')[0].to_s # starting time is enough for key
+    hash[timestamp][:eng] = arr[2..-1].join(' ') # 这里是range .. 不要用错用成逗号啊！！！ ：） 
+  end
+  hash
+end
+def srt_gen_chs_hash(array)
+  hash = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc) }
+  array.each do |line|
+    arr = line.split(/\n/)
+    # line ["", "00:00:01,810 --> 00:00:03,600", "中文啦", "还是中文啦"]
+    timestamp = arr[1].split('-->')[0].to_s # 注意切分后时间字符串后面有个空格，如果翻译人员多加了空格，那么时间会混乱，最好方法是chomp一下。稍后改进。starting time is enough for key
+    hash[timestamp][:chs] = arr[2..-1].join(' ') # 字母字段从 index 2 开始啦！ 
+#.join('  ')
+  end
+  hash
+end
+#arr =  ["\n00:00:01,810 --> 00:00:03,600\n好的  一百五十年来\nOkay. So for 150 years\n", "\n00:00:03,600 --> 00:00:12,180\n有机化学课程似乎令人闻之却步\norganic chemistry courses have tended to acquire a daunting reputation. \n"]
+#h1 =  srt_gen_chs_hash(arr)
+#h2 = srt_gen_eng_hash(arr)
+#p h1.merge(h2) {|k,v1,v2| [v1, v2]}
+
 def generate_hash(array)
   hash = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc) }
   array.each do |line|

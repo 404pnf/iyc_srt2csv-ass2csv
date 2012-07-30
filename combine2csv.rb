@@ -5,9 +5,14 @@ require 'fileutils'
 require 'find'
 $input = File.expand_path(ARGV[0])
 $output = File.expand_path(ARGV[1])
-def all_in_one($input, $output)
+def all_in_one(input, output)
+
+  input = $input
+  output = $output
+
   all_dirs = []
-  Find.find($input) do |d|
+
+  Find.find(input) do |d|
     if File.directory? d
       all_dirs << d
     end
@@ -27,8 +32,8 @@ def all_in_one($input, $output)
       zh_file, en_file = filelist[1], filelist[0]
     end
     filepath = File.dirname(File.expand_path(zh_file))
-#    p filepath
-    $newpath = filepath.sub("#{INPUT}", "#{OUTPUT}")
+    p filepath
+#    $newpath = filepath.sub($input, $output)
 #    p $newfilepath
     $inputfile = File.basename(zh_file, 'srt')
     p "transforming: #{$inputfile} \n"

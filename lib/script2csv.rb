@@ -23,9 +23,9 @@ require 'csv'
 # $output = ARGV[1].chomp('/')
 def generate_hash(str)
   hash = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc) }
-  str.gsub!(/\r/,"\n")
-  str.gsub!(/\n\n+/,"\n")
-  str.gsub!(/{[^}]+}/, '')
+  str = str.gsub(/\r/,"\n")
+  str = str.gsub(/\n\n+/,"\n")
+  str = str.gsub(/{[^}]+}/, '')
   array = str.split(/\n/)
   array = array.reject {|i|  !(i =~ /^Dialogue/) }
   array.each do |line|

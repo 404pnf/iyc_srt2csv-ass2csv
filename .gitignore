@@ -1,6 +1,7 @@
 srt_csv/*
 *.srt
 *.ass
+*.csv
 *#
 *~
 target/*

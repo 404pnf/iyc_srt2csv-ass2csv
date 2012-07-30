@@ -35,7 +35,16 @@ def generate_hash(str)
     timestamp = arr[1].to_s # starting time is enough for key
     lang = arr[3].to_s.downcase
     text = arr[9].to_s
-    $hash[timestamp][lang.to_sym] = text
+    # 如果 lang 这个项目是 *Default，那么输入的文字是中文和英文在一起的，需要用其它逻辑
+    # 比如 Dialogue: 0,0:00:40.58,0:00:45.39,*Default,NTP,0000,0000,0000,,那些将都是实的 但在那之前\NAnd that will be mostly real. But at one point somewhere,
+    # p lang.downcase
+    if lang.downcase == "*default"
+      r = text.split('\N')
+      $hash[timestamp][:chs] = r[0]
+      $hash[timestamp][:eng] = r[1]
+    else
+      $hash[timestamp][lang.to_sym] = text
+    end
   end
   $array = $hash.sort_by {|k,v| k} #用timestamp排序
   # $hash在排序后变为了数组
@@ -45,7 +54,8 @@ def generate_hash(str)
   # > a[1][:eng]
   # => "I'm Walter Lewin."
 end
-#generate_hash(file)
+#str = 'Dialogue: 0,0:00:40.58,0:00:45.39,*Default,NTP,0000,0000,0000,,那些将都是实的 但在那之前\Nthat will be mostly real. But at one point somewhere,'
+# generate_hash(str)
 def file_with_bom
   FileUtils.mkdir_p("#{$newpath}") unless File.exist?("#{$newpath}")
   File.open("#{$newpath}/#{$inputfile}csv", 'w')do |f|
@@ -56,11 +66,9 @@ def write_to_file(arr)
   # 悲剧，ruby的csv默认就是不quote值，浪费了半个小时才找到:force_quote用法
   # http://stackoverflow.com/questions/5831366/quote-all-fields-in-csv-output
   CSV.open("#{$newpath}/#{$inputfile}csv", 'a', {:force_quotes=>true}) do |csv| # append mode
-    p $array
     $array.each do |item| 
       zh = item[1][:chs]
       en = item[1][:eng]
-      p zh
       csv << [zh,en]
     end
   end
@@ -89,8 +97,7 @@ def r_ass2csv(input, output)
   output = File.expand_path $output 
   
   Find.find(input) do |file|
-    file = file.downcase
-    next unless file =~ /ass$/
+    next unless file =~ /ass$/i
     next if File.directory?(file)
     $inputfile = File.basename(file, 'ass') # $inputfile is filename. , with a dot
     $inputpath = File.dirname(file)
@@ -98,6 +105,10 @@ def r_ass2csv(input, output)
     puts "正在处理： #{file}"
     puts ""
     ass2csv(file) # defined in lib/recursive-ass2csv.rb
+    # 必须在这里清楚一下全局变量，否则每个文件都是所有文件的总和
+    # 从这里就看到了全局变量的可怕！！
+    $hash.clear
+    $array = []
   end
   ending_msg
 end

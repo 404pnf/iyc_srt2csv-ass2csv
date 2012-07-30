@@ -7,7 +7,6 @@ require 'csv'
 #可以尝试用symbol哟 ：）
 #hash[timstamp][chs] = 中文翻译
 #hash[timstamp][eng] = 中文翻译
-# 按说这个格式是严格的，因此可以直接用逗号分割
 
 # nested hash
 # http://www.dzone.com/snippets/create-nested-hashes-ruby
@@ -20,8 +19,8 @@ require 'csv'
 # x[:la][:li][:lu][:chunky][:bacon][:foo] = "bar"
 # hash = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc) }
 
-$input = ARGV[0].chomp('/')
-$output = ARGV[1].chomp('/')
+ $input = ARGV[0].chomp('/')
+ $output = ARGV[1].chomp('/')
 def generate_hash(str)
   hash = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc) }
   str.gsub!(/\r/,"\n")
@@ -33,7 +32,15 @@ def generate_hash(str)
     arr = line.split(',')
     timestamp = arr[1].to_s # starting time is enough for key
     lang = arr[3].to_s.downcase
-    text = arr[9].to_s
+    # 按说这个格式是严格的，因此可以直接用逗号分割
+    # !错误，翻译中也有英文逗号，因此不能直接用逗号分割
+    # 因此，应该把index 9 之后的所有元素都算为text才对
+    # 需要还原之前的英文逗号，因此先join一下
+    if arr.size > 9
+      text = arr[9..-1].join(',').to_s 
+    else
+      text = arr[9].to_s
+    end
     # 如果 lang 这个项目是 *Default，那么输入的文字是中文和英文在一起的，需要用其它逻辑
     # 比如 Dialogue: 0,0:00:40.58,0:00:45.39,*Default,NTP,0000,0000,0000,,那些将都是实的 但在那之前\NAnd that will be mostly real. But at one point somewhere,
     # p lang.downcase
@@ -41,8 +48,15 @@ def generate_hash(str)
       r = text.split('\N')
       hash[timestamp][:chs] = r[0]
       hash[timestamp][:eng] = r[1]
+    elsif lang.downcase == 'kak'
+      hash[timestamp][:chs] = text # 有些中文翻译的lang竟然是 kak
+      # 本身这个kak是留给写翻译组参与翻译人的姓名等信息的不应该写翻译本身
+      # oCourse-renamed/微积分重点/1.ass:Dialogue: 1,0:29:04.00,0:29:22.00,kak,,0000,0000,0000,,函数一：距离\N函数二：匀变速的速度
+      # 而且竟然也用到了换行符号 
+      # 采用这个格式是错误的，应该报告给翻译组
+      # 我们在此处理一下
     else
-      hash[timestamp][lang.to_sym] = text
+      hash[timestamp][lang.to_sym] = text.sub('\N', ' ')
     end
   end
   array = hash.sort_by {|k,v| k} #用timestamp排序
@@ -85,7 +99,7 @@ def ass2csv(file)
   file_with_bom
   write_to_file(generate_hash(input))
 end
-=begin
+
 # use this to test generate_hash
 str =<<eof
 
@@ -101,5 +115,16 @@ Dialogue: 0,0:06:55.50,0:06:58.53,*Default,,0000,0000,0000,,没有声明语言.
 
 Dialogue: 0,0:06:55.50,0:06:58.53,*Default,,0000,0000,0000,,no language code declared.
 
+Dialogue: 0,0:06:55.50,0:06:58.53,*Default,,0000,0000,0000,,有英文逗号,还有.
+
+Dialogue: 0,0:06:55.50,0:06:58.53,*Default,,0000,0000,0000,,with comma, another one, ha.
+
+Dialogue: 1,0:29:04.00,0:29:22.00,kak,,0000,0000,0000,,函数一：距离\N函数二：匀变速的速度
+
+Dialogue: 1,0:29:04.00,0:29:22.00,kak,,0000,0000,0000,,kak, kak\N竟然有中文在kak中
+
+
 eof
-=end
+
+
+p generate_hash(str)

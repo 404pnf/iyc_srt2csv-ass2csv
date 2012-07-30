@@ -33,7 +33,7 @@ def all_in_one(input, output)
     end
     filepath = File.dirname(File.expand_path(zh_file))
     p filepath
-#    $newpath = filepath.sub($input, $output)
+    $newpath = filepath.sub(input, output)
 #    p $newfilepath
     $inputfile = File.basename(zh_file, 'srt')
     p "transforming: #{$inputfile} \n"
@@ -41,6 +41,7 @@ def all_in_one(input, output)
     file_with_bom
     write_to_file(generate_hash(combined_str))
   end
+  ending_msg
 end
 
 all_in_one($input, $output)

@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 require './lib/script2csv.rb'
+$input = File.expand_path(ARGV[0])
+$output = File.expand_path(ARGV[1])
+def ass2csv(file)
+  input = File.read(file)
+  file_with_bom
+  write_to_file(generate_hash(input))
+end
 def r_ass2csv(input, output)
   # expand input out path first, or else
   # e.g input is 'user', output if 'other'

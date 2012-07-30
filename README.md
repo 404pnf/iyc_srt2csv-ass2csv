@@ -43,23 +43,14 @@ Want a flexible solution?  Fork and DIY!
 
 ## expected output
 
-      - somefolder
-        - recursive-ass2csv.rb
-        - source
-          - MIT
-      	  - autumn
-      	    - wooping.ass
-      	  - spring
-      	    - wipe.ass
+     - outputfolder
+       - MIT
+         - autumn
+           - wooping.ass.csv
+         - spring
+           - wipe.ass.csv
       	- USC
-      	  - USC.univ.4.spoiled.children.ass
-        - outputfolder
-      	  - autumn
-      	    - wooping.ass.csv
-      	  - spring
-      	    - wipe.ass.csv
-      	- USC
-      	  - USC.univ.4.spoiled.children.ass.csv
+      	 - USC.univ.4.spoiled.children.ass.csv
 	  
 # internal logic sum up
 

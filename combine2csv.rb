@@ -32,14 +32,17 @@ def all_in_one(input, output)
       zh_file, en_file = filelist[1], filelist[0]
     end
     filepath = File.dirname(File.expand_path(zh_file))
-    p filepath
+    #p filepath
     $newpath = filepath.sub(input, output)
 #    p $newfilepath
     $inputfile = File.basename(zh_file, 'srt')
     p "transforming: #{$inputfile} \n"
-    combined_str = File.read(zh_file) + "\n" + File.read(en_file)
-    combined_arr = split_srt(combined_str)
-    csv_arr = srt_generate_hash(combined_arr)
+    arr_zh = split_srt(File.read(zh_file))
+    arr_en = split_srt(File.read(en_file))
+    hash_zh = str_gen_chs_hash(arr_zh)
+    hash_en = str_gen_eng_hash(arr_en)
+    hash_all = hash_zh.merge(hash_en) {|k, chs, eng| [chs, eng]}
+    csv_arr = hash_all.sort_by {|k, v| k} # k is timestampe, sort by it
     file_with_bom
     write_to_file(csv_arr)
   end

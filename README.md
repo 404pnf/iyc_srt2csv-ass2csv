@@ -8,13 +8,7 @@
 
 # usage: 
 
-      ruby scriptname.rb
-
-1. all ass/srt files in a direcotry called 'source
-1. put this script in the same folder where 'source' resides
-1. type:  ruby scriptname.rb (replace scriptname.rb with either recursive-ass2csv.orb or recursive-srt2csv.rb)
-1. a directory named 'target' would be generated with the csv files
-1. profit!
+      ruby scriptname.rb inputfolder outputfolder
 
 # nota bene, aka, N.B.
 
@@ -22,16 +16,13 @@ This s a quick-and-dirty solution for a specific use caes.  So lots of things ar
 
 Also the following assumptions are made:
 
-1. input files are encoded in utf-16le; please blame the translation group for this
+1. input files are encoded in utf-8, if not, please re-encode your file.  On windowos, use notpad++
 1. output files are encoded in utf-8 with BOM, because excel on windows need the BOM header to recognize that a csv file is encoded in utf-8; please blame Microsoft for this
 
 Want a flexible solution?  Fork and DIY!
 
 
 # walk through
-
-Make sure your folder structure looks like this.  The directory name 'source' and 'target' is hardcoed in the script.  So, stick to it. Use lowercase only!
-
 ## directory layout
 
       - somefolder
@@ -48,7 +39,7 @@ Make sure your folder structure looks like this.  The directory name 'source' an
 
 ## run the scirpt
 
-       ruby recursive-ass2csv.rb
+       ruby recursive-ass2csv.rb somefolder, outfolder
 
 ## expected output
 
@@ -62,7 +53,7 @@ Make sure your folder structure looks like this.  The directory name 'source' an
       	    - wipe.ass
       	- USC
       	  - USC.univ.4.spoiled.children.ass
-        - target
+        - outputfolder
       	  - autumn
       	    - wooping.ass.csv
       	  - spring
@@ -70,6 +61,21 @@ Make sure your folder structure looks like this.  The directory name 'source' an
       	- USC
       	  - USC.univ.4.spoiled.children.ass.csv
 	  
+# internal logic sum up
+
+See the input file as text stream, one line a time.
+
+Origianl transcript and translation can be in separate lines, but they share the same timestamp.
+
+parse the line, get the timestamp, lang code, and transcript text, then make it a hash:  
+
+hash[timestamp][:chs]
+hash[timestamp][:eng]
+
+sort the hash by timestamp.  This turn the hash to an array.
+
+write the array to csv.
+
 # support and contribution
 
 https://github.com/404pnf/srt2csv-ass2csv

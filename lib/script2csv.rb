@@ -49,7 +49,7 @@ def generate_hash(str)
       hash[timestamp][:chs] = r[0]
       hash[timestamp][:eng] = r[1]
     elsif lang.downcase == 'kak'
-      hash[timestamp][:chs] = text # 有些中文翻译的lang竟然是 kak
+      hash[timestamp][:chs] = text.sub('\N', ' ') # 有些中文翻译的lang竟然是 kak
       # 本身这个kak是留给写翻译组参与翻译人的姓名等信息的不应该写翻译本身
       # oCourse-renamed/微积分重点/1.ass:Dialogue: 1,0:29:04.00,0:29:22.00,kak,,0000,0000,0000,,函数一：距离\N函数二：匀变速的速度
       # 而且竟然也用到了换行符号 
@@ -90,7 +90,7 @@ def ending_msg
   puts "========================================="
   puts "da di di da da"
   puts ''
-  puts "都转好了，请查看#{File.expand_path $output}目录。"
+  puts "都转好了，请查看 #{File.expand_path $output} 目录。"
   puts ''
   puts '========================================='
 end
@@ -101,6 +101,7 @@ def ass2csv(file)
 end
 
 # use this to test generate_hash
+=begin
 str =<<eof
 
 Dialogue: 0,0:07:54.50,0:06:58.53,Chs,,0000,0000,0000,,第二部分.
@@ -125,6 +126,6 @@ Dialogue: 1,0:29:04.00,0:29:22.00,kak,,0000,0000,0000,,kak, kak\N竟然有中文
 
 
 eof
+=end
 
-
-p generate_hash(str)
+#p generate_hash(str)

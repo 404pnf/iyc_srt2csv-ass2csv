@@ -15,25 +15,25 @@ def sanitize(title)
   # 不知何时引入了多个连续的 // 可这 连续的 // 给我伤害
   # 哦，我知道何时引入的了，是ARGV[0]没有chomp掉目录的结尾 /
   title = title.gsub(/\/\/+/, '/')
-  title.gsub!(/srt$/i,'srt' ) # 为了后面匹配文件名后缀方便，都换成小写
-  title.gsub!(/ass$/i,'ass' )
+  title = title.gsub(/srt$/i,'srt' ) # 为了后面匹配文件名后缀方便，都换成小写
+  title = title.gsub(/ass$/i,'ass' )
 end
-def recursive_rename(dir, output)
-  Dir.glob("#{dir}/**/*").each do |file|
+def recursive_rename(input, output)
+  input = $input
+  output = $output
+  Dir.glob("#{input}/**/*").each do |file|
     next if File.directory? file
-    abs_fn = File.expand_path(file)
-    normalized_fn = sanitize(abs_fn)
-#    p abs_fn
-#    path = (File.expand_path(normalized_fn))
-#    path = File.dirname(path)
-    path = File.dirname(normalized_fn)
-    newpath = path.sub("#{$input}", "#{output}")
+    # p file # file已经是展开的绝对目录了
+    normalized_fn = sanitize(file)
     newfilename = normalized_fn.sub("#{$input}", "#{$output}") 
+    # p normalized_fn
+    # p newfilename
+    path = File.dirname(normalized_fn)
+    newpath = path.sub(input, output)
     FileUtils.mkdir_p(newpath) unless File.exist?(newpath)
-#    p newpath
-    p newfilename
-#    next unless newfilename =~ /(srt|ass)$/i
-    FileUtils.cp(abs_fn, newfilename, :verbose => true)
+    # p newpath
+    # next unless newfilename =~ /(srt|ass)$/i
+    FileUtils.cp(file, newfilename, :verbose => true)
   end  
 end
 recursive_rename($input, $output)

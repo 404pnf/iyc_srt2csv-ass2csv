@@ -38,8 +38,10 @@ def all_in_one(input, output)
     $inputfile = File.basename(zh_file, 'srt')
     p "transforming: #{$inputfile} \n"
     combined_str = File.read(zh_file) + "\n" + File.read(en_file)
+    combined_arr = split_srt(combined_str)
+    csv_arr = srt_generate_hash(combined_arr)
     file_with_bom
-    write_to_file(generate_hash(combined_str))
+    write_to_file(csv_arr)
   end
   ending_msg
 end

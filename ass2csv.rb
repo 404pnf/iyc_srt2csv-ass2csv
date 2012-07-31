@@ -3,7 +3,7 @@ require './lib/script2csv.rb'
 $input = File.expand_path(ARGV[0])
 $output = File.expand_path(ARGV[1])
 def ass2csv(file)
-  input = File.read(file)
+  input = split_ass(File.read(file))
   file_with_bom
   write_to_file(generate_hash(input))
 end

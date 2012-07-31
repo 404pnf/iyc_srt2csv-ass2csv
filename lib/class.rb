@@ -84,16 +84,6 @@ class Array
    hash = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc) }
    self.each do |line|
      arr = line.split(/,/)
-     
-     # here, the \N in arr[9] is replaced with N
-     # WTF!!!??
-     #irb(main):001:0> File.read('test.txt')
-     #=> "1111\\N2222\n"
-     #irb(main):002:0> File.read('test.txt').split('\N')
-     #=> ["1111", "2222\n"]
-     #p arr
-     #p arr[9]
-     # read from file is OK?
      timestamp = arr[1].to_s # starting time is enough for key
      lang = arr[3].to_s.downcase
      # 按说这个格式是严格的，因此可以直接用逗号分割
@@ -105,51 +95,11 @@ class Array
      else
        text = arr[9].to_s
      end
-     
-=begin
-     irb(main):035:0> a = '1,2\N3'
-     => "1,2\\N3"
-     irb(main):036:0> a.split(',')
-     => ["1", "2\\N3"]
-     irb(main):037:0> a.split(',')[1]
-     => "2\\N3"
-     irb(main):038:0> a.split(',')[1].split(/\N/)
-     => ["2\\", "3"]
-     irb(main):039:0> a.split(',')[1].split(/\\N/)
-     => ["2", "3"]
-     # notice the diffrence o \N, single quotes and double quotes!
-     irb(main):033:0> d = "NN\NNN"
-     => "NNNNN"  # we lost \N
-     irb(main):034:0> d = 'NN\NNN'
-     => "NN\\NNN" # double back slash 
-=end
-     p arr[9]
-     p text
      # 如果 lang 这个项目是 *Default，那么输入的文字是中文和英文在一起的，需要用其它逻辑
      # 比如 Dialogue: 0,0:00:40.58,0:00:45.39,*Default,NTP,0000,0000,0000,,那些将都是实的 但在那之前\NAnd that will be mostly real. But at one point somewhere,
      # p lang.downcase
      if lang.downcase == "*default"
        r = text.split('\N')
-       # text is an array item, we get the array by split method on a string
-       # therefore, if the string contains \N, in the array item, it becomse \\N
-       #irb(main):044:0> a
-       #=> "1,2\\N3"
-       #irb(main):045:0> a.split(',')
-       #=> ["1", "2\\N3"]
-       #irb(main):046:0> a.split(',')[1].to_s
-       #=> "2\\N3"
-       # this BITES me!!!
-       #irb(main):048:0> a.split(',')[1].split(/\\N/)
-       #=> ["2", "3"]
-       #irb(main):049:0> a.split(',')[1].split(/\N/)
-       #=> ["2\\", "3"]
-       #这里使用双引号是错误的，看！！！
-       #irb(main):027:0> d = 'NN\NNN'
-       #=> "NN\\NNN"
-       #irb(main):028:0> d.split('\N')
-       #=> ["NN", "NN"]
-       #irb(main):029:0> d.split("\N"
-       #p r #这里如果用split('\N')就无法正常分割，如果用 /\N/ 报unknow regex，但正常工作，不知到为什么
        hash[timestamp][:chs] = r[0]
        hash[timestamp][:eng] = r[1]
      elsif lang.downcase == 'kak'
@@ -160,15 +110,13 @@ class Array
        # 采用这个格式是错误的，应该报告给翻译组
        # 我们在此处理一下
      else
-       #p text
        hash[timestamp][lang.to_sym] = text.gsub('\N', ' ') # 这里的sub没有成功
      end
    end
    hash
  end
 end
-#str = 'Dialogue: 0,0:00:40.58,0:00:45.39,*Default,NTP,0000,0000,0000,,那些将都是实的 但在那之前\Nthat will be mostly real. But at one point somewhere,'
-# generate_hash(str)
+
 class Hash
    def sort_by_timestamp
      return self.sort_by {|k,v| k} #用timestamp排序
@@ -210,8 +158,8 @@ def ending_msg
   puts '========================================='
 end
 # ass file format
-#=begin
-#ass = <<- 'eof' 
+# USE ''' OR <<-'EOF' OR ELSE!!!!!
+# OR ELSE \N WILL BE REPLACED WITH N, BECAUSE INTERPOLATION OF \N TO N
 ass = '''
 # so no interplation 
 
@@ -240,7 +188,7 @@ eof
 #=end
 #p 'ass'
 p ass.split_ass.ass_generate_hash.sort_by_timestamp
-p ass.split_ass
+#p ass.split_ass
 #=begin
 # srt file format
 str = <<eof

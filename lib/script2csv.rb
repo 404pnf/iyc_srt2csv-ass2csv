@@ -36,6 +36,13 @@ def split_srt(str)
   # arr now is  
   # a=  ["\n00:00:01,810 --> 00:00:03,600\n好的  一百五十年来\nOkay. So for 150 years\n", "\n00:00:03,600 --> 00:00:12,180\n有机化学课程似乎令人闻之却步\norganic chemistry courses have tended to acquire a daunting reputation. \n"]
 end
+def split_ass(str)
+  str = str.gsub(/\r/,"\n")
+  str = str.gsub(/\n\n+/,"\n")
+  str = str.gsub(/{[^}]+}/, '')
+  array = str.split(/\n/)
+  array = array.reject {|i|  !(i =~ /^Dialogue/) }
+end
 def srt_generate_hash(array)
   hash = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc) }
   array.each do |line|

@@ -160,6 +160,7 @@ end
 # ass file format
 # USE ''' OR <<-'EOF' OR ELSE!!!!!
 # OR ELSE \N WILL BE REPLACED WITH N, BECAUSE INTERPOLATION OF \N TO N
+=begin
 ass = '''
 # so no interplation 
 
@@ -185,11 +186,11 @@ Dialogue: 0,0:06:56.52,0:06:58.53,eng,,0000,0000,0000,,English with \b\a\c\kslas
 eof
 '''
 # bitten by heredoc!!! so hard!
-#=end
+=end
 #p 'ass'
-p ass.split_ass.ass_generate_hash.sort_by_timestamp
+#p ass.split_ass.ass_generate_hash.sort_by_timestamp
 #p ass.split_ass
-#=begin
+=begin
 # srt file format
 str = <<eof
 1
@@ -202,7 +203,7 @@ Okay. So for 150 years
 有机化学课程似乎令人闻之却步
 organic chemistry courses have tended to acquire a daunting reputation. 
 eof
-#=end
+=end
 #p 'srt'
 #p str.split_srt.srt_generate_hash.sort_by_timestamp
 #p str.split_srt.srt_gen_eng_hash.sort_by_timestamp

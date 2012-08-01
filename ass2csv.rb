@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
-require './lib/script2csv.rb'
+#require './lib/script2csv.rb'
+require './lib/transcript2csv.rb'
 $input = File.expand_path(ARGV[0])
 $output = File.expand_path(ARGV[1])
 def ass2csv(file)
-  input = split_ass(File.read(file))
+#  input = split_ass(File.read(file))
+  input = File.read(file).split_ass.ass_generate_hash.sort_by_timestamp
   file_with_bom
-  write_to_file(generate_hash(input))
+#  write_to_file(generate_hash(input))
+  write_to_file(input)
 end
 def r_ass2csv(input, output)
   # expand input out path first, or else

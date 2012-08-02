@@ -21,44 +21,13 @@ Also the following assumptions are made:
 
 Want a flexible solution?  Fork and DIY!
 
-
-# walk through
-## directory layout
-
-      - somefolder
-        - recursive-ass2csv.rb
-        - source
-          - MIT
-      	  - autumn
-      	   - wooping.ass
-      	  - spring
-      	   - wipe.ass
-      	- USC
-      	 - USC.univ.4.spoiled.children.ass
-        - target
-
-## run the scirpt
-
-       ruby recursive-ass2csv.rb somefolder, outfolder
-
-## expected output
-
-     - outputfolder
-       - MIT
-         - autumn
-           - wooping.ass.csv
-         - spring
-           - wipe.ass.csv
-      	- USC
-      	 - USC.univ.4.spoiled.children.ass.csv
-	  
 # internal logic sum up
 
-See the input file as text stream, one line a time.
+See the input file as text stream.
 
 Origianl transcript and translation can be in separate lines, but they share the same timestamp.
 
-parse the line, get the timestamp, lang code, and transcript text, then make it a hash:  
+Parse the line, get the timestamp, lang code, and transcript text, then make it a hash:  
 
 hash[timestamp][:chs]
 hash[timestamp][:eng]

@@ -3,6 +3,9 @@ require './lib/script2csv.rb'
 require 'csv'
 require 'fileutils'
 require 'find'
+
+# usage: script.rb inputfolder outputfolder
+
 $input = File.expand_path(ARGV[0])
 $output = File.expand_path(ARGV[1])
 def all_in_one(input, output)
@@ -38,9 +41,10 @@ def all_in_one(input, output)
     $inputfile = File.basename(zh_file, 'srt')
     p "transforming: #{$inputfile} \n"
     arr_zh = split_srt(File.read(zh_file))
+    p arr_zh
     arr_en = split_srt(File.read(en_file))
-    hash_zh = str_gen_chs_hash(arr_zh)
-    hash_en = str_gen_eng_hash(arr_en)
+    hash_zh = srt_gen_chs_hash(arr_zh)
+    hash_en = srt_gen_eng_hash(arr_en)
     hash_all = hash_zh.merge(hash_en) {|k, chs, eng| [chs, eng]}
     csv_arr = hash_all.sort_by {|k, v| k} # k is timestampe, sort by it
     file_with_bom

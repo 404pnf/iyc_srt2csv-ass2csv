@@ -35,7 +35,14 @@ class String
    str = str.gsub(/<[^>]+>/,'')  # 删除这种垃圾 <font color=\"#ffff00\">
    arr = str.split(/^[0-9]+$/) 
    arr.shift # 第一行是个空的
-   return arr # 必须有这行，否则最后输出的是组后求值的arr.shift，成了""啦！用return关键字提醒一下自己
+   newarr =arr.map {|i| i.gsub(/\n/, ' ').gsub(/  +/, ' ')} # some translation spread into twol lines
+   # e.g
+   # 1.
+   # timestamp -> timestamp  transcript goes here
+   # more transcript goes here
+   # EOF
+   # we need to make them into one line
+   return newarr # 必须有这行，否则最后输出的是组后求值的arr.shift，成了""啦！用return关键字提醒一下自己
  end
  def split_ass
    str = self.gsub(/\r/,"\n")

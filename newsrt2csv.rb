@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-require './lib/script2csv.rb'
-require './lib/transcript2csv.rb'
+#require './lib/script2csv.rb'
+#require './lib/transcript2csv.rb'
+require './lib/newclass.rb'
 #require 'csv'
 #require 'fileutils'
 #require 'find'

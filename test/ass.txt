@@ -1,0 +1,4 @@
+Dialogue: 0,0:00:07.80,0:00:10.05,*Default,NTP,0000,0000,0000,,我想简单宣传一下我们这个演说台\N{\f} english goes here
+
+
+Dialogue: 0,0:00:07.80,0:00:10.05,*Default,NTP,0000,0000,0000,,我想简单宣传一下我们这个演说台\N{\f} english goes here mroe english lahhhhhhhhh 
